@@ -16,7 +16,7 @@ interface OnUserClickListener {
 
 class UsersAdapter(private val onUserClickListener: OnUserClickListener): RecyclerView.Adapter<UsersAdapter.Holder>() {
 
-    private var usersList = ArrayList<User>()
+    private var usersList = mutableListOf<User>()
 
     class Holder(item: View): RecyclerView.ViewHolder(item) {
 
@@ -54,7 +54,7 @@ class UsersAdapter(private val onUserClickListener: OnUserClickListener): Recycl
         return usersList.size
     }
 
-    fun refresh(list: ArrayList<User>) {
+    fun refresh(list: MutableList<User>) {
         usersList = list
         notifyDataSetChanged()
     }

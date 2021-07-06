@@ -17,12 +17,12 @@ class MainActivity2 : AppCompatActivity() {
         reposList.layoutManager = LinearLayoutManager(this)
         reposList.adapter = adapter
         if (fromMain) {
-            textView.text = filtred_userset[from].name
+            title = filtred_userset[from].name
             println(filtred_userset[from].repositories.size)
             adapter.refresh(filtred_userset[from].repositories)
         } else {
             val user = intent.getStringExtra("Fav")
-            textView.text = user
+            title = user
         }
     }
 }

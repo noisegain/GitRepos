@@ -17,12 +17,12 @@ val dataset = arrayListOf(
     Repository("Sea", "I'll kill all titans and go to the sea, witch contains salt", "Java", "User2")
 )
 
-val userset = arrayListOf(
+val userset = mutableListOf(
     User("User1", arrayListOf(dataset[1], dataset[2])),
     User("User2", arrayListOf(dataset[0], dataset[3]))
 )
 
-var filtred_userset = arrayListOf<User>().apply { addAll(userset) }
+var filtred_userset = userset.toMutableList()
 
 var favorites = mutableSetOf<String>()
 

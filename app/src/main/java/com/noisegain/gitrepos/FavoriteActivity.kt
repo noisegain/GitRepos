@@ -11,7 +11,7 @@ class FavoriteActivity : AppCompatActivity(), OnUserClickListener {
 
     private val adapter = UsersAdapter(this)
 
-    private var users = arrayListOf<User>()
+    private var users = mutableListOf<User>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -20,7 +20,7 @@ class FavoriteActivity : AppCompatActivity(), OnUserClickListener {
         rcFav.layoutManager = LinearLayoutManager(this)
         rcFav.adapter = adapter
         favorites.forEach {
-            users.add(prefConfig.getUser(it))
+            users.add(User("AAA", arrayListOf(Repository("A", "B"), Repository("C", "D"))))
         }
         adapter.refresh(users)
     }
