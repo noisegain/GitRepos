@@ -1,5 +1,7 @@
 package com.noisegain.gitrepos
 
+import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -20,6 +22,12 @@ val userset = arrayListOf(
     User("User2", arrayListOf(dataset[0], dataset[3]))
 )
 
+var filtred_userset = arrayListOf<User>().apply { addAll(userset) }
+
+var favorites = mutableSetOf<String>()
+
+val prefConfig = PrefConfig()
+
 class MainActivity : AppCompatActivity(), OnUserClickListener {
 
     private lateinit var binding: ActivityMainBinding
@@ -30,6 +38,7 @@ class MainActivity : AppCompatActivity(), OnUserClickListener {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         init()
+        val main_context = applicationContext
         favoriteButton.setOnClickListener {
             val myIntent = Intent(this, FavoriteActivity::class.java)
             startActivity(myIntent)
@@ -37,6 +46,7 @@ class MainActivity : AppCompatActivity(), OnUserClickListener {
     }
 
     private fun init() = with(binding) {
+        favorites = prefConfig.readPref()
         rcView.layoutManager = LinearLayoutManager(this@MainActivity)
         rcView.adapter = adapter
         adapter.refresh(userset)
@@ -47,14 +57,17 @@ class MainActivity : AppCompatActivity(), OnUserClickListener {
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
-                val n = arrayListOf<User>()
+                filtred_userset.clear()
                 val toSearch = newText?.lowercase()?:""
+                println(toSearch)
                 userset.forEach { x ->
+                    println(x.name.lowercase())
                     if (toSearch in x.name.lowercase()) {
-                        n.add(x)
+                        filtred_userset.add(x)
                     }
                 }
-                adapter.refresh(n)
+                println(filtred_userset)
+                adapter.refresh(filtred_userset)
                 return false
             }
 
@@ -65,6 +78,7 @@ class MainActivity : AppCompatActivity(), OnUserClickListener {
         Toast.makeText(this, "WOW ${userset[position].name}", Toast.LENGTH_SHORT).show()
         val myIntent = Intent(this, MainActivity2::class.java)
         myIntent.putExtra("User", position)
+        myIntent.putExtra("Main", true)
         println(position)
         startActivity(myIntent)
     }

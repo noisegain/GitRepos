@@ -13,10 +13,16 @@ class MainActivity2 : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main2)
         val from = intent.getIntExtra("User", 0)
-        textView.text = userset[from].name
+        val fromMain = intent.getBooleanExtra("Main", true)
         reposList.layoutManager = LinearLayoutManager(this)
         reposList.adapter = adapter
-        println(userset[from].repositories.size)
-        adapter.refresh(userset[from].repositories)
+        if (fromMain) {
+            textView.text = filtred_userset[from].name
+            println(filtred_userset[from].repositories.size)
+            adapter.refresh(filtred_userset[from].repositories)
+        } else {
+            val user = intent.getStringExtra("Fav")
+            textView.text = user
+        }
     }
 }

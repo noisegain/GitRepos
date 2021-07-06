@@ -1,6 +1,6 @@
 package com.noisegain.gitrepos
 
-import android.content.Intent
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,11 +19,20 @@ class UsersAdapter(private val onUserClickListener: OnUserClickListener): Recycl
     private var usersList = ArrayList<User>()
 
     class Holder(item: View): RecyclerView.ViewHolder(item) {
+
         private val binding = UserViewBinding.bind(item)
+
         fun bind(user: User) = with(binding) {
             nameView.text = user.name
+            var state = user.name in favorites
+            val back = arrayOf(R.drawable.baseline_bookmark_border_black_36, R.drawable.baseline_bookmark_black_36)
+            addFav.setImageResource(back[if (state) 1 else 0])
             addFav.setOnClickListener {
-                println("Hahahahah")
+                state = !state
+                addFav.setImageResource(back[if (state) 1 else 0])
+                if (state) favorites.add(user.name)
+                else favorites.remove(user.name)
+                prefConfig.writePref(favorites)
                 println(user.name)
             }
         }
