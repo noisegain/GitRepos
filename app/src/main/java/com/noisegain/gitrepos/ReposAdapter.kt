@@ -6,9 +6,9 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.noisegain.gitrepos.databinding.RepositoryRowBinding
 
-class Adapter: RecyclerView.Adapter<Adapter.Holder>() {
+class ReposAdapter: RecyclerView.Adapter<ReposAdapter.Holder>() {
 
-    var reposList = ArrayList<Repository>()
+    private var reposList = ArrayList<Repository>()
 
     class Holder(item: View): RecyclerView.ViewHolder(item) {
         private val binding = RepositoryRowBinding.bind(item)
@@ -42,5 +42,4 @@ class Adapter: RecyclerView.Adapter<Adapter.Holder>() {
         reposList.add(repository)
         notifyDataSetChanged()
     }
-
 }
