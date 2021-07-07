@@ -132,8 +132,7 @@ class MainActivity : AppCompatActivity(), OnUserClickListener {
 
     private fun readPref(): MutableSet<String> {
         val pref = PreferenceManager.getDefaultSharedPreferences(applicationContext)
-        val json = pref.getString("fav", "") ?: return mutableSetOf()
-        Log.d("AAAAA", json)
+        val json = pref.getString("fav", null) ?: return mutableSetOf()
         val res = Klaxon().parseArray<String>(json)
         return res?.toMutableSet()?:mutableSetOf()
     }
