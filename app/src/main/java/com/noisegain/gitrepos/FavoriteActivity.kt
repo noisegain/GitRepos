@@ -26,14 +26,10 @@ class FavoriteActivity : AppCompatActivity(), OnUserClickListener {
     }
 
     override fun onUserItemClicked(position: Int) {
-        Toast.makeText(this, "WOW ${userset[position].name}", Toast.LENGTH_SHORT).show()
         val myIntent = Intent(this, RepositoryActivity::class.java)
         myIntent.putExtra("User", users[position].name)
         startActivity(myIntent)
     }
 
-    override fun writePref() {
-        println(favorites)
-        favChanged = true
-    }
+    override fun writePref() { favChanged = true }
 }

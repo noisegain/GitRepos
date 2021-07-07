@@ -37,9 +37,4 @@ class ReposAdapter: RecyclerView.Adapter<ReposAdapter.Holder>() {
         reposList = list
         notifyDataSetChanged()
     }
-
-    fun addRep(repository: Repository) {
-        reposList.add(repository)
-        notifyDataSetChanged()
-    }
 }

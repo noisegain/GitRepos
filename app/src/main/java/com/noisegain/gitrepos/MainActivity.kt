@@ -4,20 +4,16 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.preference.PreferenceManager
-import android.util.Log
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.recyclerview.widget.*
 import com.beust.klaxon.Klaxon
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.noisegain.gitrepos.databinding.ActivityMainBinding
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
-import java.io.FileNotFoundException
+import kotlinx.coroutines.*
 import java.net.URL
 
 val userset = mutableListOf<User>()
@@ -26,20 +22,23 @@ var favorites = mutableSetOf<String>()
 
 var favChanged = false
 
+interface Writer {
+    fun writePref(fav: MutableSet<String>)
+    fun readPref(): MutableSet<String>
+    fun getUser(name: String): User
+}
+
 class MainActivity : AppCompatActivity(), OnUserClickListener {
 
     private lateinit var binding: ActivityMainBinding
     private val adapter = UsersAdapter(this)
 
-    lateinit var context: Context
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        context = applicationContext
         init()
-        val main_context = applicationContext
         favoriteButton.setOnClickListener {
             val myIntent = Intent(this, FavoriteActivity::class.java)
             startActivity(myIntent)
@@ -86,21 +85,7 @@ class MainActivity : AppCompatActivity(), OnUserClickListener {
                 userset.add(User(it, arrayListOf()))
             }
         } else {
-            var json = " "
-            var err = 0
-            while (
-                try {
-                    json = URL("https://api.github.com/search/users?q=$name").readText()
-                    println(json)
-                    false
-                } catch (e: FileNotFoundException) {
-                    true
-                }
-            ) {
-                println("ERROR $err")
-                err++
-                if (err == 5) return
-            }
+            val json = URL("https://api.github.com/search/users?q=$name").readText()
             val res: UserSearchJSON = Gson().fromJson(json, object: TypeToken<UserSearchJSON>() {}.type)
             res.items?.forEach {
                 userset.add(User(it.login, arrayListOf()))
@@ -112,7 +97,6 @@ class MainActivity : AppCompatActivity(), OnUserClickListener {
     }
 
     override fun onUserItemClicked(position: Int) {
-        Toast.makeText(this, "WOW ${userset[position].name}", Toast.LENGTH_SHORT).show()
         val myIntent = Intent(this, RepositoryActivity::class.java)
         myIntent.putExtra("User", userset[position].name)
         startActivity(myIntent)
@@ -121,9 +105,7 @@ class MainActivity : AppCompatActivity(), OnUserClickListener {
     override fun writePref() {
         println("WRITING")
         val pref = PreferenceManager.getDefaultSharedPreferences(applicationContext)
-        println(favorites)
         val list = Klaxon().toJsonString(favorites.toList())
-        Log.d("AAAAA", list)
         with(pref.edit()) {
             putString("fav", list)
             apply()

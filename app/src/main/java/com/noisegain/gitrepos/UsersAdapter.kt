@@ -1,14 +1,10 @@
 package com.noisegain.gitrepos
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.noisegain.gitrepos.databinding.UserViewBinding
-import kotlinx.android.synthetic.main.repository_row.view.*
-
 
 interface OnUserClickListener {
     fun onUserItemClicked(position: Int)
@@ -62,10 +58,4 @@ class UsersAdapter(private val onUserClickListener: OnUserClickListener): Recycl
         usersList = list
         notifyDataSetChanged()
     }
-
-    fun addRep(user: User) {
-        usersList.add(user)
-        notifyDataSetChanged()
-    }
-
 }
