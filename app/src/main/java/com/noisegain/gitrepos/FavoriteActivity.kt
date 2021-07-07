@@ -20,18 +20,20 @@ class FavoriteActivity : AppCompatActivity(), OnUserClickListener {
         rcFav.layoutManager = LinearLayoutManager(this)
         rcFav.adapter = adapter
         favorites.forEach {
-            users.add(User("AAA", arrayListOf(Repository("A", "B"), Repository("C", "D"))))
+            users.add(User(it, arrayListOf()))
         }
         adapter.refresh(users)
     }
 
     override fun onUserItemClicked(position: Int) {
         Toast.makeText(this, "WOW ${userset[position].name}", Toast.LENGTH_SHORT).show()
-        val myIntent = Intent(this, MainActivity2::class.java)
-        myIntent.putExtra("User", position)
-        myIntent.putExtra("Main", false)
-        myIntent.putExtra("Fav", users[position].name)
-        println(position)
+        val myIntent = Intent(this, RepositoryActivity::class.java)
+        myIntent.putExtra("User", users[position].name)
         startActivity(myIntent)
+    }
+
+    override fun writePref() {
+        println(favorites)
+        favChanged = true
     }
 }

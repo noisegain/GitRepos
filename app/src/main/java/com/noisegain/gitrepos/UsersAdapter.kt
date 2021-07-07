@@ -12,6 +12,7 @@ import kotlinx.android.synthetic.main.repository_row.view.*
 
 interface OnUserClickListener {
     fun onUserItemClicked(position: Int)
+    fun writePref()
 }
 
 class UsersAdapter(private val onUserClickListener: OnUserClickListener): RecyclerView.Adapter<UsersAdapter.Holder>() {
@@ -22,19 +23,9 @@ class UsersAdapter(private val onUserClickListener: OnUserClickListener): Recycl
 
         private val binding = UserViewBinding.bind(item)
 
-        fun bind(user: User) = with(binding) {
+        fun bind(user: User): UserViewBinding = with(binding) {
             nameView.text = user.name
-            var state = user.name in favorites
-            val back = arrayOf(R.drawable.baseline_bookmark_border_black_36, R.drawable.baseline_bookmark_black_36)
-            addFav.setImageResource(back[if (state) 1 else 0])
-            addFav.setOnClickListener {
-                state = !state
-                addFav.setImageResource(back[if (state) 1 else 0])
-                if (state) favorites.add(user.name)
-                else favorites.remove(user.name)
-                prefConfig.writePref(favorites)
-                println(user.name)
-            }
+            return binding
         }
     }
 
@@ -43,10 +34,23 @@ class UsersAdapter(private val onUserClickListener: OnUserClickListener): Recycl
         return Holder(view)
     }
 
-    override fun onBindViewHolder(holder: Holder, position: Int) {
-        holder.bind(usersList[position])
-        holder.itemView.setOnClickListener {
+    override fun onBindViewHolder(holder: Holder, position: Int) = with(holder) {
+        val user = usersList[position]
+        itemView.setOnClickListener {
             onUserClickListener.onUserItemClicked(position)
+        }
+        var state = user.name in favorites
+        val back = arrayOf(R.drawable.baseline_bookmark_border_black_36, R.drawable.baseline_bookmark_black_36)
+        with(bind(user)) {
+            addFav.setImageResource(back[if (state) 1 else 0])
+            addFav.setOnClickListener {
+                state = !state
+                addFav.setImageResource(back[if (state) 1 else 0])
+                if (state) favorites.add(user.name)
+                else favorites.remove(user.name)
+                onUserClickListener.writePref()
+                println(user.name)
+            }
         }
     }
 
