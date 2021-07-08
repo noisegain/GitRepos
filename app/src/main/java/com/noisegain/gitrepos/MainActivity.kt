@@ -44,6 +44,9 @@ class MainActivity : AppCompatActivity(), OnUserClickListener {
         setContentView(binding.root)
         favorites = readPref()
         history = readHistory()
+        favorites.ifEmpty {
+            Toast.makeText(this@MainActivity, "Welcome!\nStart search users on github using this search bar on top", Toast.LENGTH_LONG).show()
+        }
         init()
         favoriteButton.setOnClickListener {
             val myIntent = Intent(this, FavoriteActivity::class.java)
