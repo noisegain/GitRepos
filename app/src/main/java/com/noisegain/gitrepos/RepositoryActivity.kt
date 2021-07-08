@@ -37,6 +37,7 @@ class RepositoryActivity : AppCompatActivity() {
         res.forEach {
             repos.add(Repository(it.name?:"", it.description?:"", it.language?:"", name))
         }
+        if (repos.isEmpty()) repos.add(Repository("This user don't have repositories yet", "", "", ""))
         runOnUiThread {
             title = name
             adapter.refresh(repos)

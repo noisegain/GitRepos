@@ -15,23 +15,42 @@
         android:layout_marginTop="16dp"
         android:layout_marginBottom="16dp"
         android:layout_weight="1"
-        app:icon="@android:drawable/btn_star_big_on"
+        app:icon="@android:drawable/btn_star"
         app:iconGravity="top"
         app:layout_constraintBottom_toTopOf="@+id/rcView"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.855"
         app:layout_constraintStart_toEndOf="@+id/searchView"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <Button
+        android:id="@+id/historyButton"
+        android:layout_width="36dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
+        android:layout_weight="1"
+        app:icon="@android:drawable/ic_menu_recent_history"
+        app:iconGravity="top"
+        app:layout_constraintBottom_toTopOf="@+id/rcView"
+        app:layout_constraintEnd_toStartOf="@+id/favoriteButton"
+        app:layout_constraintHorizontal_bias="0.555"
+        app:layout_constraintStart_toEndOf="@+id/searchView"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
 
     <SearchView
         android:id="@+id/searchView"
-        android:layout_width="0dp"
-        android:layout_height="50dp"
+        android:layout_width="286dp"
+        android:layout_height="49dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="50dp"
         android:layout_marginBottom="16dp"
         app:layout_constraintBottom_toTopOf="@+id/rcView"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 

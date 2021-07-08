@@ -20,13 +20,17 @@ val userset = mutableListOf<User>()
 
 var favorites = mutableSetOf<String>()
 
+var history = arrayListOf<String>()
+
 var favChanged = false
 
-interface Writer {
+var historyQ = ""
+
+/*interface Writer {
     fun writePref(fav: MutableSet<String>)
     fun readPref(): MutableSet<String>
     fun getUser(name: String): User
-}
+}*/
 
 class MainActivity : AppCompatActivity(), OnUserClickListener {
 
@@ -38,9 +42,15 @@ class MainActivity : AppCompatActivity(), OnUserClickListener {
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        favorites = readPref()
+        history = readHistory()
         init()
         favoriteButton.setOnClickListener {
             val myIntent = Intent(this, FavoriteActivity::class.java)
+            startActivity(myIntent)
+        }
+        historyButton.setOnClickListener {
+            val myIntent = Intent(this, HistoryActivity::class.java)
             startActivity(myIntent)
         }
         searchView.setOnQueryTextListener(object: SearchView.OnQueryTextListener{
@@ -49,6 +59,7 @@ class MainActivity : AppCompatActivity(), OnUserClickListener {
                 GlobalScope.launch(Dispatchers.IO) {
                     async { searchUsers(query) }
                 }
+                if (query?:"" != "") history.add(query!!)
                 return false
             }
 
@@ -66,15 +77,32 @@ class MainActivity : AppCompatActivity(), OnUserClickListener {
         init()
     }
 
-    private fun init() = with(binding) {
-        favorites = readPref()
-        userset.clear()
-        favorites.forEach {
-            userset.add(User(it, arrayListOf()))
+    override fun onStop() {
+        super.onStop()
+        val pref = PreferenceManager.getDefaultSharedPreferences(applicationContext)
+        val list = Klaxon().toJsonString(history)
+        with(pref.edit()) {
+            putString("history", list)
+            apply()
         }
+    }
+
+    private fun init() = with(binding) {
+        userset.clear()
         rcView.layoutManager = LinearLayoutManager(this@MainActivity)
         rcView.adapter = adapter
-        adapter.refresh(userset)
+        if (historyQ != "") {
+            GlobalScope.launch(Dispatchers.IO) {
+                async { searchUsers(historyQ) }
+            }
+            searchView.setQuery(historyQ, false)
+            historyQ = ""
+        } else {
+            favorites.forEach {
+                userset.add(User(it, arrayListOf()))
+            }
+            adapter.refresh(userset)
+        }
     }
 
     fun searchUsers(name: String?) {
@@ -103,13 +131,19 @@ class MainActivity : AppCompatActivity(), OnUserClickListener {
     }
 
     override fun writePref() {
-        println("WRITING")
         val pref = PreferenceManager.getDefaultSharedPreferences(applicationContext)
         val list = Klaxon().toJsonString(favorites.toList())
         with(pref.edit()) {
             putString("fav", list)
             apply()
         }
+    }
+
+    private fun readHistory(): ArrayList<String> {
+        val pref = PreferenceManager.getDefaultSharedPreferences(applicationContext)
+        val json = pref.getString("history", null) ?: return arrayListOf()
+        val res = Klaxon().parseArray<String>(json)
+        return res as ArrayList<String>
     }
 
     private fun readPref(): MutableSet<String> {
