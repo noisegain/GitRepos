@@ -1,6 +1,5 @@
 package com.noisegain.gitrepos
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.preference.PreferenceManager
@@ -77,7 +76,7 @@ class MainActivity : AppCompatActivity(), OnUserClickListener {
         super.onRestart()
         if (favChanged) writePref()
         favChanged = false
-        init()
+        if (historyQ != "") init()
     }
 
     override fun onStop() {
