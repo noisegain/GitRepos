@@ -23,6 +23,10 @@ class FavoriteActivity : AppCompatActivity(), OnUserClickListener {
             users.add(User(it, arrayListOf()))
         }
         adapter.refresh(users)
+        favClearButton.setOnClickListener {
+            favorites.clear()
+            adapter.refresh(mutableListOf())
+        }
     }
 
     override fun onUserItemClicked(position: Int) {

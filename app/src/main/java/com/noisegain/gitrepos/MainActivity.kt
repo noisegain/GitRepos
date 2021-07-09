@@ -77,6 +77,7 @@ class MainActivity : AppCompatActivity(), OnUserClickListener {
         if (favChanged) writePref()
         favChanged = false
         if (historyQ != "") init()
+        adapter.refresh(userset)
     }
 
     override fun onStop() {
